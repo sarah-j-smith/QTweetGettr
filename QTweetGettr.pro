@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -25,14 +25,31 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        widget.cpp
+        widget.cpp \
+    tweetrow.cpp \
+    twitterclient.cpp \
+    twitterauthorization.cpp \
+    tweetmodel.cpp \
+    tweet.cpp
 
 HEADERS += \
-        widget.h
+        widget.h \
+    tweetrow.h \
+    twitterclient.h \
+    twitterauthorization.h \
+    tweetmodel.h \
+    tweet.h
 
 FORMS += \
-        widget.ui
+        widget.ui \
+    tweetrow.ui
 
 CONFIG += mobility
 MOBILITY = 
+
+DISTFILES += \
+    TwitterCredentials.json
+
+RESOURCES += \
+    resources.qrc
 
