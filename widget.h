@@ -15,7 +15,12 @@ public:
     explicit Widget(QWidget *parent = 0);
     ~Widget();
 
+private slots:
+    void on_pushButton_clicked();
+
 private:
+    void loadTweets();
+
     Ui::Widget *ui;
 };
 
