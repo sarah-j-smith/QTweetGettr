@@ -19,6 +19,7 @@ private slots:
     void on_pushButton_clicked();
 
 private:
+    void setupTable();
     void loadTweets();
 
     Ui::Widget *ui;

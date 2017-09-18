@@ -6,7 +6,7 @@
 class TwitterAuthorization
 {
 public:
-    static QString token();
+    static QByteArray token();
     static void setToken(const QString &token);
 
     static bool hasToken();

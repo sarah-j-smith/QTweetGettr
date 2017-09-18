@@ -3,6 +3,7 @@
 #include "tweetrow.h"
 
 #include <QTimer>
+#include <QItemDelegate>
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -11,7 +12,13 @@ Widget::Widget(QWidget *parent) :
     ui->setupUi(this);
 
     auto self = this;
-    QTimer::singleShot(0, this, [self]{ self->loadTweets(); });
+    QTimer::singleShot(0, this, [=] {
+        for (int i = 0; i < 30; ++i)
+        {
+            auto row = new TweetRow();
+            self->ui->tableWidget->setCellWidget(i, 0, row);
+        }
+    });
 }
 
 Widget::~Widget()
@@ -26,9 +33,4 @@ void Widget::on_pushButton_clicked()
 
 void Widget::loadTweets()
 {
-    for (int i = 0; i < 30; ++i)
-    {
-        auto row = new TweetRow(self);
-        ui->tableWidget->setItem(i, 0, row);
-    }
 }

@@ -29,7 +29,6 @@ SOURCES += \
     tweetrow.cpp \
     twitterclient.cpp \
     twitterauthorization.cpp \
-    tweetmodel.cpp \
     tweet.cpp
 
 HEADERS += \
@@ -37,7 +36,6 @@ HEADERS += \
     tweetrow.h \
     twitterclient.h \
     twitterauthorization.h \
-    tweetmodel.h \
     tweet.h
 
 FORMS += \
