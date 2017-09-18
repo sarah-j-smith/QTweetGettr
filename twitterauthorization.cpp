@@ -11,10 +11,10 @@ void TwitterAuthorization::setToken(const QString &token)
     settings.setValue(kAuthorizationTokenStorageKey, token);
 }
 
-QString TwitterAuthorization::token()
+QByteArray TwitterAuthorization::token()
 {
     QSettings settings;
-    return settings.value(kAuthorizationTokenStorageKey).toString();
+    return settings.value(kAuthorizationTokenStorageKey).toByteArray();
 }
 
 bool TwitterAuthorization::hasToken()

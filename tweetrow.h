@@ -8,12 +8,12 @@ namespace Ui {
 class TweetRow;
 }
 
-class TweetRow : public QTableWidgetItem
+class TweetRow : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit TweetRow();
+    explicit TweetRow(QWidget *parent = 0);
     ~TweetRow();
 
 private:

@@ -2,8 +2,12 @@
 #define TWITTERCLIENT_H
 
 #include <QObject>
+#include <QString>
+
+#include <functional>
 
 class QNetworkAccessManager;
+class Tweet;
 
 class TwitterClient : public QObject
 {
@@ -11,9 +15,11 @@ class TwitterClient : public QObject
 public:
     explicit TwitterClient(QObject *parent = nullptr);
 
-    void fetchAuthorizationToken();
-    void fetchTweetsForUser();
-    void fetchImageAtURL();
+    void fetchAuthorizationToken(std::function<void (QString)> completion);
+    void fetchTweetsForUser(const QString &user, std::function<void (std::vector<Tweet>, QString)> completion);
+    void fetchImageAtURL(const QString &imageURL, std::function<void (QImage)> completion);
+
+    static QUrl createURL(const QString &urlString);
 
 signals:
 
