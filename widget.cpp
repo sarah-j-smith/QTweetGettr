@@ -5,6 +5,8 @@
 #include <QTimer>
 #include <QItemDelegate>
 
+#include <iostream>
+
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Widget)
@@ -33,4 +35,10 @@ void Widget::on_pushButton_clicked()
 
 void Widget::loadTweets()
 {
+    for (int i = 0; i < 30; ++i)
+    {
+        auto row = qobject_cast<TweetRow *>(ui->tableWidget->cellWidget(i, 0));
+        std::cout << row << std::endl;
+        row->setTwitterHandle(QString("Foobar %1").arg(i));
+    }
 }
