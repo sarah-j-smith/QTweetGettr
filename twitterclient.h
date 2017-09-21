@@ -3,17 +3,20 @@
 
 #include <QObject>
 #include <QString>
+#include <QNetworkAccessManager>
 
 #include <functional>
+#include <memory>
 
-class QNetworkAccessManager;
 class Tweet;
 
-class TwitterClient : public QObject
+class TwitterClient
 {
-    Q_OBJECT
 public:
-    explicit TwitterClient(QObject *parent = nullptr);
+    TwitterClient() =default;
+
+    TwitterClient(const TwitterClient &) = delete;
+    TwitterClient &operator=(const TwitterClient &) = delete;
 
     void fetchAuthorizationToken(std::function<void (QString)> completion);
     void fetchTweetsForUser(const QString &user, std::function<void (std::vector<Tweet>, QString)> completion);
@@ -26,7 +29,7 @@ signals:
 public slots:
 
 private:
-    QNetworkAccessManager *manager;
+    std::unique_ptr<QNetworkAccessManager> manager;
 };
 
 #endif // TWITTERCLIENT_H

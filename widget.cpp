@@ -1,13 +1,16 @@
 #include "widget.h"
 #include "ui_widget.h"
 #include "tweetrow.h"
+#include "twitterclient.h"
 
 #include <QTimer>
 #include <QItemDelegate>
+#include <QtDebug>
 
-Widget::Widget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::Widget)
+Widget::Widget(QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::Widget)
+    , twitterClient(new TwitterClient())
 {
     ui->setupUi(this);
 
@@ -33,4 +36,7 @@ void Widget::on_pushButton_clicked()
 
 void Widget::loadTweets()
 {
+    twitterClient->fetchAuthorizationToken([](QString errorString){
+        qDebug() << errorString;
+    });
 }

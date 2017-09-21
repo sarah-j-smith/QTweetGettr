@@ -3,9 +3,13 @@
 
 #include <QWidget>
 
+#include <memory>
+
 namespace Ui {
 class Widget;
 }
+
+class TwitterClient;
 
 class Widget : public QWidget
 {
@@ -23,6 +27,8 @@ private:
     void loadTweets();
 
     Ui::Widget *ui;
+
+    std::shared_ptr<TwitterClient> twitterClient;
 };
 
 #endif // WIDGET_H

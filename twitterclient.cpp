@@ -1,5 +1,6 @@
 #include "twitterclient.h"
 #include "twitterauthorization.h"
+#include "tweet.h"
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -7,6 +8,10 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
+
+#include <iostream>
+#include <functional>
+#include <memory>
 
 static const char *kContentTypeHeader = "Content-Type";
 static const char *kAuthorizationHeaderKey = "Authorization";
@@ -37,9 +42,8 @@ QByteArray headerWithAuthorization()
     return QByteArray("Bearer %1") + TwitterAuthorization::token();
 }
 
-TwitterClient::TwitterClient(QObject *parent)
-    : QObject(parent)
-    , manager(new QNetworkAccessManager)
+TwitterClient::TwitterClient()
+    : manager(new QNetworkAccessManager)
 {
     //
 }
@@ -68,7 +72,7 @@ void TwitterClient::fetchAuthorizationToken(std::function<void (QString)> comple
         }
         else
         {
-            auto errorReport = tokenReply->errorString().isEmpty() ? "Could not authorize" : tokenReply->errorString();
+            auto errorReport = tokenReply->error() == QNetworkReply::NoError ? "Could not authorize" : tokenReply->errorString();
             completion(errorReport);
         }
     });
@@ -82,7 +86,18 @@ void TwitterClient::fetchTweetsForUser(const QString &user, std::function<void (
 
     auto tweetReply = manager->get(tweetRequest);
     connect(tweetReply, &QNetworkReply::finished, [&]{
-        //
+        auto responseData = QJsonDocument::fromBinaryData(tweetReply->readAll());
+        std::cout << responseData.toJson().constData();
+        if (responseData.isArray())
+        {
+            auto tweets = Tweet::tweetsFromArray(responseData.array());
+            completion(tweets, QString());
+        }
+        else
+        {
+            auto errorReport = tweetReply->errorString().isEmpty() ? "Could not fetch tweets" : tweetReply->errorString();
+            completion(std::vector<Tweet>(), errorReport);
+        }
     });
 }
 

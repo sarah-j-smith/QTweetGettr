@@ -3,16 +3,14 @@
 
 #include <vector>
 
-class Tweet;
-using TweetPtr = std::unique_ptr<Tweet>;
-using TweetList = std::vector<TweetPtr>;
+#include <QJsonArray>
 
 class Tweet
 {
 public:
     Tweet();
 
-    static TweetList tweetsFromArray();
+    static std::vector<Tweet> tweetsFromArray(const QJsonArray &tweetData);
 };
 
 #endif // TWEET_H
