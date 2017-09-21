@@ -13,7 +13,7 @@ class Tweet;
 class TwitterClient
 {
 public:
-    TwitterClient() =default;
+    TwitterClient();
 
     TwitterClient(const TwitterClient &) = delete;
     TwitterClient &operator=(const TwitterClient &) = delete;
