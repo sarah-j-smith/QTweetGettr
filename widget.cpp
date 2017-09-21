@@ -7,6 +7,8 @@
 #include <QItemDelegate>
 #include <QtDebug>
 
+#include <iostream>
+
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
@@ -39,4 +41,10 @@ void Widget::loadTweets()
     twitterClient->fetchAuthorizationToken([](QString errorString){
         qDebug() << errorString;
     });
+    for (int i = 0; i < 30; ++i)
+    {
+        auto row = qobject_cast<TweetRow *>(ui->tableWidget->cellWidget(i, 0));
+        std::cout << row << std::endl;
+        row->setTwitterHandle(QString("Foobar %1").arg(i));
+    }
 }

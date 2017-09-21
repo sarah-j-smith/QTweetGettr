@@ -61,7 +61,7 @@ void TwitterClient::fetchAuthorizationToken(std::function<void (QString)> comple
     tokenRequest.setRawHeader(kAuthorizationHeaderKey, authHeader);
 
     auto tokenReply = manager->post(tokenRequest, kAuthorizationBody);
-    connect(tokenReply, &QNetworkReply::finished, [&]{
+    QObject::connect(tokenReply, &QNetworkReply::finished, [&]{
         auto authData = tokenReply->readAll();
         auto json = QJsonDocument::fromBinaryData(authData);
         auto tokenString = json.object()["access_token"].toString();
@@ -85,7 +85,7 @@ void TwitterClient::fetchTweetsForUser(const QString &user, std::function<void (
     tweetRequest.setRawHeader(kAuthorizationHeaderKey, headerWithAuthorization());
 
     auto tweetReply = manager->get(tweetRequest);
-    connect(tweetReply, &QNetworkReply::finished, [&]{
+    QObject::connect(tweetReply, &QNetworkReply::finished, [&]{
         auto responseData = QJsonDocument::fromBinaryData(tweetReply->readAll());
         std::cout << responseData.toJson().constData();
         if (responseData.isArray())
