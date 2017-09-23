@@ -3,10 +3,12 @@
 
 #include <QObject>
 #include <QString>
+#include <QNetworkReply>
 #include <QNetworkAccessManager>
 
 #include <functional>
 #include <memory>
+#include <vector>
 
 class Tweet;
 
@@ -33,6 +35,7 @@ public slots:
 
 private:
     std::unique_ptr<QNetworkAccessManager> manager;
+    std::vector<QNetworkReply *> inFlightRequests;
 };
 
 #endif // TWITTERCLIENT_H

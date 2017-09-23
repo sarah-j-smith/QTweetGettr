@@ -13,6 +13,7 @@
 #include <iostream>
 #include <functional>
 #include <memory>
+#include <algorithm>
 
 static const char *kContentTypeHeader = "Content-Type";
 static const char *kAuthorizationHeaderKey = "Authorization";
@@ -25,7 +26,7 @@ static const char *kAuthorizationContentType = "application/x-www-form-urlencode
 ///
 QByteArray headerForAuthorization()
 {
-    auto authData = std::unique_ptr<QFile>(new QFile("qrc:/res/TwitterCredentials.json"));
+    auto authData = std::unique_ptr<QFile>(new QFile(":/res/TwitterCredentials.json"));
     authData->open(QIODevice::ReadOnly);
     auto json = QJsonDocument::fromJson(authData->readAll());
     auto apiKey = json.object()["APIKey"].toString();
@@ -62,8 +63,9 @@ void TwitterClient::fetchAuthorizationToken(std::function<void (QString)> comple
     tokenRequest.setRawHeader(kAuthorizationHeaderKey, authHeader);
 
     auto tokenReply = manager->post(tokenRequest, kAuthorizationBody);
-    QObject::connect(tokenReply, &QNetworkReply::finished, [&]{
+    QObject::connect(tokenReply, &QNetworkReply::finished, [=]{
         auto authData = tokenReply->readAll();
+        qDebug() << authData;
         auto json = QJsonDocument::fromBinaryData(authData);
         auto tokenString = json.object()["access_token"].toString();
         TwitterAuthorization::setToken(tokenString);
@@ -76,7 +78,9 @@ void TwitterClient::fetchAuthorizationToken(std::function<void (QString)> comple
             auto errorReport = tokenReply->error() == QNetworkReply::NoError ? "Could not authorize" : tokenReply->errorString();
             completion(errorReport);
         }
+        inFlightRequests.erase(std::remove(inFlightRequests.begin(), inFlightRequests.end(), tokenReply));
     });
+    inFlightRequests.push_back(tokenReply);
 }
 
 void TwitterClient::fetchTweetsForUser(const QString &user, std::function<void (std::vector<Tweet>, QString)> completion)
@@ -86,7 +90,9 @@ void TwitterClient::fetchTweetsForUser(const QString &user, std::function<void (
     tweetRequest.setRawHeader(kAuthorizationHeaderKey, headerWithAuthorization());
 
     auto tweetReply = manager->get(tweetRequest);
-    QObject::connect(tweetReply, &QNetworkReply::finished, [&]{
+    QObject::connect(tweetReply, &QNetworkReply::finished, [=]{
+        qDebug() << "Tweet reply: " << tweetReply;
+        qDebug() << "   bytes: " << tweetReply->bytesAvailable();
         auto responseData = QJsonDocument::fromBinaryData(tweetReply->readAll());
         std::cout << responseData.toJson().constData();
         if (responseData.isArray())
@@ -99,7 +105,9 @@ void TwitterClient::fetchTweetsForUser(const QString &user, std::function<void (
             auto errorReport = tweetReply->errorString().isEmpty() ? "Could not fetch tweets" : tweetReply->errorString();
             completion(std::vector<Tweet>(), errorReport);
         }
+        inFlightRequests.erase(std::remove(inFlightRequests.begin(), inFlightRequests.end(), tweetReply));
     });
+    inFlightRequests.push_back(tweetReply);
 }
 
 void TwitterClient::fetchImageAtURL(const QString &imageURL, std::function<void (QImage)> completion)
@@ -116,7 +124,9 @@ void TwitterClient::fetchImageAtURL(const QString &imageURL, std::function<void 
         {
             completion(QImage());
         }
+        inFlightRequests.erase(std::remove(inFlightRequests.begin(), inFlightRequests.end(), imageReply));
     });
+    inFlightRequests.push_back(imageReply);
 }
 
 QUrl TwitterClient::createURL(const QString &urlString)
