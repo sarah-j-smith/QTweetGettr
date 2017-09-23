@@ -1,5 +1,7 @@
 #include "tweetrow.h"
 #include "ui_tweetrow.h"
+#include "tweet.h"
+#include "extensions.h"
 
 TweetRow::TweetRow(QWidget *parent)
     : QWidget(parent)
@@ -52,4 +54,13 @@ QPixmap TweetRow::profilePicture() const
 void TweetRow::setProfilePicture(const QPixmap &picture)
 {
     ui->userIcon->setPixmap(picture);
+}
+
+void TweetRow::applyTweet(const Tweet &tweet)
+{
+    setStatusText(tweet.text());
+    setTwitterName(tweet.name());
+    setTwitterHandle(tweet.screenName());
+    setProfilePicture(QPixmap::fromImage(tweet.userImage()));
+    loadURLInto(tweet.biggerProfileImageURL(), ui->userIcon);
 }
