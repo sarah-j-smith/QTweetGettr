@@ -9,6 +9,8 @@ namespace Ui {
 class TweetRow;
 }
 
+class Tweet;
+
 class TweetRow : public QWidget
 {
     Q_OBJECT
@@ -28,6 +30,8 @@ public:
     void setTwitterHandle(const QString &handle);
     QPixmap profilePicture() const;
     void setProfilePicture(const QPixmap &picture);
+
+    void applyTweet(const Tweet &tweet);
 
 signals:
     void statusTextChanged(QString);

@@ -15,14 +15,17 @@ class TwitterClient
 public:
     TwitterClient();
 
-    TwitterClient(const TwitterClient &) = delete;
-    TwitterClient &operator=(const TwitterClient &) = delete;
-
     void fetchAuthorizationToken(std::function<void (QString)> completion);
     void fetchTweetsForUser(const QString &user, std::function<void (std::vector<Tweet>, QString)> completion);
     void fetchImageAtURL(const QString &imageURL, std::function<void (QImage)> completion);
 
     static QUrl createURL(const QString &urlString);
+
+    TwitterClient(const TwitterClient &) = delete;
+    TwitterClient &operator=(const TwitterClient &) = delete;
+
+    TwitterClient(const TwitterClient &&) = delete;
+    TwitterClient &operator=(const TwitterClient &&) = delete;
 
 signals:
 

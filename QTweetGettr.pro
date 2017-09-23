@@ -29,14 +29,17 @@ SOURCES += \
     tweetrow.cpp \
     twitterclient.cpp \
     twitterauthorization.cpp \
-    tweet.cpp
+    tweet.cpp \
+    extensions.cpp
 
 HEADERS += \
         widget.h \
     tweetrow.h \
     twitterclient.h \
     twitterauthorization.h \
-    tweet.h
+    tweet.h \
+    tweetprivate.h \
+    extensions.h
 
 FORMS += \
         widget.ui \

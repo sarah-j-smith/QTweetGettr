@@ -7,6 +7,7 @@
 #include <QNetworkRequest>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QImage>
 #include <QFile>
 
 #include <iostream>
@@ -103,7 +104,19 @@ void TwitterClient::fetchTweetsForUser(const QString &user, std::function<void (
 
 void TwitterClient::fetchImageAtURL(const QString &imageURL, std::function<void (QImage)> completion)
 {
-
+    auto imageURLRequest = QNetworkRequest(createURL(imageURL));
+    auto imageReply = manager->get(imageURLRequest);
+    QObject::connect(imageReply, &QNetworkReply::finished, [&]{
+        auto imageData = imageReply->readAll();
+        if (imageData.size() > 0)
+        {
+            completion(QImage(imageData));
+        }
+        else
+        {
+            completion(QImage());
+        }
+    });
 }
 
 QUrl TwitterClient::createURL(const QString &urlString)
