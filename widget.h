@@ -24,6 +24,8 @@ private slots:
 
     void on_lineEdit_editingFinished();
 
+    void on_lineEdit_returnPressed();
+
 private:
     void setupTable();
     void loadTweets();

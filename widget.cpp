@@ -47,6 +47,7 @@ void Widget::loadTweets()
             qDebug() << errorString;
         });
     }
+    qDebug() << "token: " << TwitterAuthorization::token();
     auto twitterHandle = ui->lineEdit->text().trimmed();
     twitterClient->fetchTweetsForUser(twitterHandle, [=](std::vector<Tweet> tweets, QString error){
         if (tweets.empty())
@@ -68,4 +69,9 @@ void Widget::on_lineEdit_editingFinished()
 {
     auto twitterHandle = ui->lineEdit->text().trimmed();
     ui->pushButton->setEnabled(twitterHandle.count() > 2);
+}
+
+void Widget::on_lineEdit_returnPressed()
+{
+    loadTweets();
 }

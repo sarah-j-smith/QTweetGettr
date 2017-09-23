@@ -19,5 +19,5 @@ QByteArray TwitterAuthorization::token()
 
 bool TwitterAuthorization::hasToken()
 {
-    return token().isEmpty();
+    return !token().isEmpty();
 }
