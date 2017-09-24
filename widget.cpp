@@ -27,13 +27,21 @@ Widget::Widget(QWidget *parent)
 {
     ui->setupUi(this);
 
-    auto rowHeight = 88 * QGuiApplication::screens().first()->devicePixelRatio();
-    ui->tableWidget->verticalHeader()->setDefaultSectionSize(rowHeight);
-
 #if defined(Q_OS_IOS) || defined(Q_OS_ANDROID)
-    QScroller::grabGesture(ui->tableWidget);
-#else
-    ui->tableWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    auto rowHeight = 44 * QGuiApplication::screens().first()->devicePixelRatio();
+    ui->tableWidget->verticalHeader()->setDefaultSectionSize(rowHeight);
+    ui->tableWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    QScroller *scroller = QScroller::scroller(ui->tableWidget);
+    ui->tableWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
+
+    QScrollerProperties properties = QScroller::scroller(scroller)->scrollerProperties();
+    QVariant overshootPolicy = QVariant::fromValue<QScrollerProperties::OvershootPolicy>(QScrollerProperties::OvershootAlwaysOff);
+    properties.setScrollMetric(QScrollerProperties::VerticalOvershootPolicy, overshootPolicy);
+    scroller->setScrollerProperties(properties);
+
+    //Scrolling Gesture
+    scroller->grabGesture(ui->tableWidget, QScroller::LeftMouseButtonGesture);
 #endif
 }
 
