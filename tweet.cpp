@@ -11,14 +11,15 @@
 Tweet::Tweet(const QJsonObject &tweetData)
     : d(new TweetPrivate)
 {
+    d->tweetDictionary = tweetData;
+
     d->text = tweetData["text"].toString();
     d->createdAt = tweetData["created_at"].toString();
     d->name = d->user()["name"].toString();
-    d->screenName = d->user()["screenName"].toString();
+    d->screenName = d->user()["screen_name"].toString();
     d->description = QJsonDocument(d->tweetDictionary).toJson();
     d->userImage = QImage("qrc://res/default@2x.png");
     d->profileImageURL = d->user()["profile_image_url"].toString();
-    d->biggerProfileImageURL = [=](){ return d->profileImageURL.replace("_normal", "_bigger"); };
 }
 
 Tweet::~Tweet()
@@ -123,5 +124,6 @@ void Tweet::setProfileImageURL(const QString &newProfileImageURL)
 
 QString Tweet::biggerProfileImageURL() const
 {
-    return d->biggerProfileImageURL();
+    QString profileURL = d->profileImageURL; // non-const
+    return profileURL.replace("_normal", "_bigger");
 }

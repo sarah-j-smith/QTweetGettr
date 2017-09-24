@@ -14,19 +14,11 @@
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
+    , tableIntialised(false)
     , ui(new Ui::Widget)
     , twitterClient(new TwitterClient())
 {
     ui->setupUi(this);
-
-    auto self = this;
-    QTimer::singleShot(0, this, [=] {
-        for (int i = 0; i < 30; ++i)
-        {
-            auto row = new TweetRow();
-            self->ui->tableWidget->setCellWidget(i, 0, row);
-        }
-    });
 }
 
 Widget::~Widget()
@@ -39,15 +31,19 @@ void Widget::on_pushButton_clicked()
     loadTweets();
 }
 
-void Widget::loadTweets()
+void Widget::setupTable()
 {
-    if (!TwitterAuthorization::hasToken())
+    if (tableIntialised) { return; }
+    for (int i = 0; i < 30; ++i)
     {
-        twitterClient->fetchAuthorizationToken([](QString errorString){
-            qDebug() << errorString;
-        });
+        auto row = new TweetRow();
+        ui->tableWidget->setCellWidget(i, 0, row);
     }
-    qDebug() << "token: " << TwitterAuthorization::token();
+    tableIntialised = true;
+}
+
+void Widget::fetchTweets()
+{
     auto twitterHandle = ui->lineEdit->text().trimmed();
     twitterClient->fetchTweetsForUser(twitterHandle, [=](std::vector<Tweet> tweets, QString error){
         if (tweets.empty())
@@ -56,6 +52,7 @@ void Widget::loadTweets()
         }
         else
         {
+            setupTable();
             for (int i = 0; i < 30; ++i)
             {
                 auto row = qobject_cast<TweetRow *>(ui->tableWidget->cellWidget(i, 0));
@@ -63,6 +60,29 @@ void Widget::loadTweets()
             }
         }
     });
+}
+
+void Widget::loadTweets()
+{
+    if (!TwitterAuthorization::hasToken())
+    {
+        twitterClient->fetchAuthorizationToken([=](QString errorString){
+            if (!TwitterAuthorization::hasToken())
+            {
+                QMessageBox::warning(this, "Error", errorString.isEmpty()
+                                     ? "Could not authorize with Twitter"
+                                     : errorString, QMessageBox::Ok);
+            }
+            else
+            {
+                fetchTweets();
+            }
+        });
+    }
+    else
+    {
+        fetchTweets();
+    }
 }
 
 void Widget::on_lineEdit_editingFinished()
@@ -73,5 +93,9 @@ void Widget::on_lineEdit_editingFinished()
 
 void Widget::on_lineEdit_returnPressed()
 {
-    loadTweets();
+    auto twitterHandle = ui->lineEdit->text().trimmed();
+    if (twitterHandle.count() > 2)
+    {
+        loadTweets();
+    }
 }
