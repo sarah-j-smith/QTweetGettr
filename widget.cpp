@@ -10,6 +10,10 @@
 #include <QtDebug>
 #include <QMessageBox>
 
+#if defined(Q_OS_IOS)
+    #include <QScroller>
+#endif
+
 #include <iostream>
 
 Widget::Widget(QWidget *parent)
@@ -19,6 +23,10 @@ Widget::Widget(QWidget *parent)
     , twitterClient(new TwitterClient())
 {
     ui->setupUi(this);
+
+#if defined(Q_OS_IOS)
+    QScroller::grabGesture(ui->tableWidget);
+#endif
 }
 
 Widget::~Widget()
