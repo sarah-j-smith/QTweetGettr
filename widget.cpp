@@ -9,8 +9,11 @@
 #include <QItemDelegate>
 #include <QtDebug>
 #include <QMessageBox>
+#include <QGuiApplication>
+#include <QScreen>
+#include <QScrollBar>
 
-#if defined(Q_OS_IOS)
+#if defined(Q_OS_IOS) || defined(Q_OS_ANDROID)
     #include <QScroller>
 #endif
 
@@ -24,8 +27,13 @@ Widget::Widget(QWidget *parent)
 {
     ui->setupUi(this);
 
-#if defined(Q_OS_IOS)
+    auto rowHeight = 88 * QGuiApplication::screens().first()->devicePixelRatio();
+    ui->tableWidget->verticalHeader()->setDefaultSectionSize(rowHeight);
+
+#if defined(Q_OS_IOS) || defined(Q_OS_ANDROID)
     QScroller::grabGesture(ui->tableWidget);
+#else
+    ui->tableWidget->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 #endif
 }
 
