@@ -90,7 +90,6 @@ void TwitterClient::fetchTweetsForUser(const QString &user, std::function<void (
     auto tweetReply = manager->get(tweetRequest);
     QObject::connect(tweetReply, &QNetworkReply::finished, [=]{
         auto responseData = QJsonDocument::fromJson(tweetReply->readAll());
-        std::cout << responseData.toJson().constData();
         if (responseData.isArray())
         {
             auto tweets = Tweet::tweetsFromArray(responseData.array());

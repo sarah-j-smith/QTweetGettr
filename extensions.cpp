@@ -22,7 +22,6 @@ void loadURLInto(const QString &url, QLabel *label)
         }
         else
         {
-            qDebug() << imageReply->errorString();
             label->setPixmap(QPixmap::fromImage(QImage(":/res/default@2x.png")));
         }
     });
