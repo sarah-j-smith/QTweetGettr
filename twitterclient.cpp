@@ -41,7 +41,7 @@ QByteArray headerForAuthorization()
 
 QByteArray headerWithAuthorization()
 {
-    return QByteArray("Bearer %1") + TwitterAuthorization::token();
+    return QByteArray("Bearer ") + TwitterAuthorization::token();
 }
 
 TwitterClient::TwitterClient()
@@ -65,8 +65,7 @@ void TwitterClient::fetchAuthorizationToken(std::function<void (QString)> comple
     auto tokenReply = manager->post(tokenRequest, kAuthorizationBody);
     QObject::connect(tokenReply, &QNetworkReply::finished, [=]{
         auto authData = tokenReply->readAll();
-        qDebug() << authData;
-        auto json = QJsonDocument::fromBinaryData(authData);
+        auto json = QJsonDocument::fromJson(authData);
         auto tokenString = json.object()["access_token"].toString();
         TwitterAuthorization::setToken(tokenString);
         if (TwitterAuthorization::hasToken())
@@ -88,12 +87,9 @@ void TwitterClient::fetchTweetsForUser(const QString &user, std::function<void (
     auto userURL = TwitterClient::createURL(kTimelineRootURL + user.trimmed());
     auto tweetRequest = QNetworkRequest(userURL);
     tweetRequest.setRawHeader(kAuthorizationHeaderKey, headerWithAuthorization());
-
     auto tweetReply = manager->get(tweetRequest);
     QObject::connect(tweetReply, &QNetworkReply::finished, [=]{
-        qDebug() << "Tweet reply: " << tweetReply;
-        qDebug() << "   bytes: " << tweetReply->bytesAvailable();
-        auto responseData = QJsonDocument::fromBinaryData(tweetReply->readAll());
+        auto responseData = QJsonDocument::fromJson(tweetReply->readAll());
         std::cout << responseData.toJson().constData();
         if (responseData.isArray())
         {

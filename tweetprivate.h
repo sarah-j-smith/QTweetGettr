@@ -17,9 +17,6 @@ public:
     QImage userImage;
     QString profileImageURL;
 
-    std::function<QString ()> biggerProfileImageURL;
-    std::function<QString ()> originalProfileURL;
-
     QJsonObject tweetDictionary;
 
     QJsonObject user() const

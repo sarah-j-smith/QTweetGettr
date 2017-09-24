@@ -29,6 +29,9 @@ private slots:
 private:
     void setupTable();
     void loadTweets();
+    void fetchTweets();
+
+    bool tableIntialised;
 
     Ui::Widget *ui;
 

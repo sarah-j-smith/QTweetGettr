@@ -24,7 +24,7 @@
     <number>8</number>
    </property>
    <property name="bottomMargin">
-    <number>8</number>
+    <number>0</number>
    </property>
    <item>
     <widget class="QLabel" name="userIcon">
@@ -54,7 +54,7 @@
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
      <property name="spacing">
-      <number>4</number>
+      <number>2</number>
      </property>
      <item>
       <widget class="QLabel" name="userTitle">
@@ -72,6 +72,9 @@
      </item>
      <item>
       <widget class="QLabel" name="userHandle">
+       <property name="styleSheet">
+        <string notr="true">color: rgb(72, 99, 226)</string>
+       </property>
        <property name="text">
         <string>@daddycool</string>
        </property>

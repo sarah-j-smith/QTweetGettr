@@ -15,10 +15,15 @@ void loadURLInto(const QString &url, QLabel *label)
     auto imageURLRequest = QNetworkRequest(url);
     auto imageReply = networkManager->get(imageURLRequest);
     QObject::connect(imageReply, &QNetworkReply::finished, [=](){
-        if (imageReply->error() == QNetworkReply::NoError)
+        auto image = QImage::fromData(imageReply->readAll());
+        if (!image.isNull())
         {
-            auto image = QImage(imageReply->readAll());
             label->setPixmap(QPixmap::fromImage(image));
+        }
+        else
+        {
+            qDebug() << imageReply->errorString();
+            label->setPixmap(QPixmap::fromImage(QImage(":/res/default@2x.png")));
         }
     });
 }
