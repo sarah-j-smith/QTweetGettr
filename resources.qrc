@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/res">
+        <file>TwitterCredentials.json</file>
+        <file>default@2x.png</file>
+    </qresource>
+</RCC>
