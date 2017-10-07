@@ -9,6 +9,11 @@ Might run on other plaforms as well, but I haven't tried.  The instructions belo
 # Dependencies
 
 * Xcode 
+    * Make sure you can build & run an Xcode templated app (eg Single View template unaltered)
+    * This will require signing in to your Apple Developer account
+    * When first running the template app choose "Always" when asked about KeyChain access
+    * Finally verify on the device `Settings > General > Device Management` that the dev account is trusted.
+
 * [Qt 5.x](https://www1.qt.io/download-open-source/)
 
 > Note: read the section on the LGPL on the above link carefully.  This project is completely
